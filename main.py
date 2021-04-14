@@ -17,13 +17,16 @@ def check(strg, search=re.compile(r'[^a#]').search):
 
 def inputcandp():
     AUTH=input("[INPUT] Authorization:   ")
-
-    cookie=input("[INPUT] Cookie:   ")
-    SID=re.search(r'SID=(.*?);', cookie).group(1)
-    HSID=re.search(r'HSID=(.*?);', cookie).group(1)
-    SSID=re.search(r'SSID=(.*?);', cookie).group(1)
-    APISID=re.search(r'APISID=(.*?);', cookie).group(1)
-    SAPISID=re.search(r'SAPISID=(.*?);', cookie).group(1) 
+    try:
+        cookie=input("[INPUT] Cookie:   ")
+        SID=re.search(r'SID=(.*?);', cookie).group(1)
+        HSID=re.search(r'HSID=(.*?);', cookie).group(1)
+        SSID=re.search(r'SSID=(.*?);', cookie).group(1)
+        APISID=re.search(r'APISID=(.*?);', cookie).group(1)
+        SAPISID=re.search(r'SAPISID=(.*?);', cookie).group(1) 
+    except:
+        print("[ERROR] Cookie invalid")
+        sys.exit()
 
     APIKEY=input("[INPUT] X-Goog-Api-Key:   ")
 
@@ -59,7 +62,7 @@ parser.add_argument(
     default=None, help='Name of the wordlist')
 parser.add_argument(
     '-s','--speed', type=int,
-    default=None, help='The speed the wordlist goes at')
+    default=1, help='The speed the wordlist goes at')
 parser.add_argument(
     '-n','--name',
     default="data", help='The name of the csv output file')
@@ -70,8 +73,7 @@ min_length=args.minimum
 max_length=args.maximum
 nameofdf=args.name
 
-round(args.speed)
-thespeed=args.speed
+thespeed=round(args.speed)
 if args.wordlist==None:
     print("[ERROR] You must choose a wordlist")
     sys.exit()
@@ -235,8 +237,8 @@ def extractionprocess(startnums,endnums):
                 theemail=r['results'][i]['suggestion']
                 theprofilepicture=r['results'][i]['person']['photo'][0]['url']
                 
-                print("[EXTRACTED] "+thefirstname+" and "+theemail)
-                df=df.append({'FirstName':thefirstname,'FullName':thefullname,'Email':theemail,'ProfilePicture':theprofilepicture},ignore_index=True,sort=False)
+                print("[EXTRACTED] [%s] [%s] [%s] [%s]" %(content[startnums].strip(),thefirstname,thefullname,theemail))
+                df=df.append({'Given Name':thefirstname,'Display Name':thefullname,'Email':theemail,'Profile Picture':theprofilepicture},ignore_index=True,sort=False)
 
                 sys.stdout.flush()
             except:
@@ -244,7 +246,7 @@ def extractionprocess(startnums,endnums):
         df.to_csv(nameofdf+".csv")
         startnums=startnums+1
 
-df=pd.DataFrame(columns=["FirstName","FullName","Email","ProfilePicture"])
+df=pd.DataFrame(columns=["Given Name","Display Name","Email","Profile Picture"])
 if thespeed==1:
     extractionprocess(0,len(open(wordlist,"rb").readlines()))
 else:
