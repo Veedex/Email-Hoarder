@@ -77,7 +77,6 @@ if args.wordlist==None:
     sys.exit()
 else:
     wordlist="wordlists/"+str(args.wordlist)+".txt"
-#" / \ [ ] : ; | ,
 for char in nameofdf:
     if char=="*":
         print("[ERROR] Invalid name")
@@ -214,7 +213,6 @@ if thespeed!=1:
     print("[INFO] Starting process with a speed of %s." % thespeed)
 else:
     print("[INFO] Process starting.")
-#averageresponse=0.1
 
 def extractionprocess(startnums,endnums):
     global df
